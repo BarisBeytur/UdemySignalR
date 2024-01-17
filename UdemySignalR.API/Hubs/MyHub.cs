@@ -19,6 +19,5 @@ namespace UdemySignalR.API.Hubs
 			await Clients.All.SendAsync("ReceiveNames", Names);
 		}
 
-
 	}
 }
