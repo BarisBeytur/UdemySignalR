@@ -30,6 +30,10 @@
                 connection.start().then(() => {
                     showStatus();
                     $("#loading").hide();
+
+                    connection.invoke("GetNames");
+
+
                 })
                 .catch((err) => {
                     console.log(err); 
@@ -39,7 +43,7 @@
            
             showStatus()
 
-            // Subscribes
+            // Loading operations
             connection.onreconnecting(err => {
                 $("#loading").show();
                 showStatus();
@@ -57,6 +61,12 @@
                 Start();
             });
 
+
+            // Subscribes
+            connection.on("ReceiveName", (name) => {
+                $("#namesList").append(`<li class="list-group-item"> ${name}</li>`)
+            })
+            
             connection.on("ReceiveClientCount", (clientCount) => {
 
                 $("#clientCount").text(clientCount);
@@ -66,20 +76,27 @@
                 $("#notify").html(`<div class="alert alert-warning"> ${countText} </div>`)
             });
 
+            connection.on("Error", (errorText) => {
+                alert(errorText);
+            });
+
+            connection.on("ReceiveNames", (names) => {
+
+                $("#namesList").empty();
+
+                names.forEach((item, index) => {
+                    $("#namesList").append(`<li class = "list-group-item"> ${item} </li>`);
+                });
+            });
+
+
+
             // Clicks
             $("#btnNameSave").click(() => {
 
                 connection.invoke("SendName", $("#txtName").val()).catch((err) =>
                     console.log(err))
             })
-
-
-            // On methods
-            connection.on("ReceiveName", (name) => {
-                $("#namesList").append(`<li class="list-group-item"> ${name}</li>`)
-            })
-
-          
 
         })
 
