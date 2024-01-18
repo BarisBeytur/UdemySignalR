@@ -13,20 +13,51 @@
         $(document).ready(() => {
 
             var connection = new signalR.HubConnectionBuilder()
-            .configureLogging(signalR.LogLevel.Debug)
-            .withUrl("http://localhost:5175/MyHub", {
-                skipNegotiation: true,
-                transport: signalR.HttpTransportType.WebSockets
-            })
-            .build();
+                //.configureLogging(signalR.LogLevel.Information) // Log mesajlari icin
+                .withAutomaticReconnect([1000, 2000, 3000, 4000]) // Otomatik tekrar baglanti icin
+                .withUrl("http://localhost:5175/MyHub")
+                .build();
 
-            $("#conStatus").text(connection.state);
+            showStatus();
+            Start();
 
-
-            connection.start().then(() => {
+            // Functions
+            function showStatus() {
                 $("#conStatus").text(connection.state);
-            }).catch((err) => { console.log(err) });
-            $("#conStatus").text(connection.state);
+            }
+
+            function Start() {
+                connection.start().then(() => {
+                    showStatus();
+                    $("#loading").hide();
+                })
+                .catch((err) => {
+                    console.log(err); 
+                    setTimeout(() => Start(), 2000);
+                });
+            }
+           
+            showStatus()
+
+
+            connection.onreconnecting(err => {
+                $("#loading").show();
+                showStatus();
+            });
+
+            connection.onreconnected(connectionId => {
+                $("#loading").hide();
+                showStatus();
+                console.log("connectionId:" + connectionId);
+            });
+
+            connection.onclose(() => {
+                $("#loading").hide();
+                showStatus();
+                Start();
+            });
+
+            // Clicks
             $("#btnNameSave").click(() => {
 
                 connection.invoke("SendName", $("#txtName").val()).catch((err) =>
@@ -34,6 +65,7 @@
             })
 
 
+            // On methods
             connection.on("ReceiveName", (name) => {
                 console.log(name);
             })
@@ -48,13 +80,25 @@
 <div class="row">
     <div class="col-md-8 offset-2">
         <input class="form-control" type="text" id="txtName" />
-       <hr />
-       <button class="btn btn-primary" id="btnNameSave">İsim kaydet</button>
+        <hr />
+        <button class="btn btn-primary" id="btnNameSave">İsim kaydet</button>
         <br />
         <br />
-       <div class="alert alert-info">
-            Bağlantı Durumu: <strong id="conStatus"></strong>
+        <div class="alert alert-info">
+            <div style="float:left;">
+                Bağlantı Durumu: <strong id="conStatus"></strong>
+            </div>
+            <div style="float:right;">
+                <div id="loading" class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
         </div>
-
     </div>
+
+    <div class="col-md-8 offset-2">
+        <ul class="list-group" id="namesList"></ul>
+    </div>
+
 </div>
