@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using UdemySignalR.API.Hubs;
+using UdemySignalR.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,8 @@ builder.Services.AddCors(o =>
     .AllowCredentials()
     .WithOrigins("http://localhost:44324", "http://localhost:21093", "http://localhost:44324", "http://localhost:5067", "https://localhost:7294");
 }));
+
+builder.Services.AddDbContext<AppDbContext>();
 
 var app = builder.Build();
 
