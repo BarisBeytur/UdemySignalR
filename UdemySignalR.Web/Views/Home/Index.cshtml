@@ -30,8 +30,8 @@
                 connection.start().then(() => {
                     showStatus();
                     $("#loading").hide();
-                    connection.invoke("GetNames");
-                    //connection.invoke("GetNamesByGroup");
+                    //connection.invoke("GetNames");
+                    connection.invoke("GetNamesByGroup");
 
 
                 })
@@ -101,28 +101,22 @@
                 $(`${listName}`).append(`<li class="list-group-item">${name}</li>`);
             });
 
-            connection.on("ReceiveNamesByGroup", (teams) => {
-                console.log(teams);
+            connection.on("ReceiveNamesByGroup", (teamDic) => {
 
-                teams.forEach((team, index) => {
-
+                for (let teamId in teamDic) {
                     let listName;
 
-                    if (team.teamId == 1)
-
-                        listName = "ATeamList";
+                    if (teamId == 1)
+                        listName = "#ATeamList";
                     else
-                        listName = "BTeamList";
+                        listName = "#BTeamList";
 
-                    team.users.forEach((user, index2) => {
+                    teamDic[teamId].forEach((user, index) => {
+                        $(`${listName}`).append(`<li class="list-group-item">${user.name}</li>`);
+                    });
+                }
+            });
 
-                        $(`#${listName}`).append(`<li class="list-group-item">${user.name} </li>`)
-
-                    })
-
-                })
-
-            })
 
 
 
