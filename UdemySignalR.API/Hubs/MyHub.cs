@@ -23,6 +23,10 @@ namespace UdemySignalR.API.Hubs
 
         #endregion
 
+        public async Task SendProduct(Product p)
+        {
+            await Clients.All.SendAsync("ReceiveProduct",p);
+        }
 
         public async Task SendName(string name)
         {
