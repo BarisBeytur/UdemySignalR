@@ -1,0 +1,6 @@
+@Covid19Chart.API_HostAddress = http://localhost:5211
+
+GET {{Covid19Chart.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
