@@ -1,5 +1,6 @@
 using Covid19Chart.API.Hubs;
 using Covid19Chart.API.Models;
+using Covid19Chart.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddSignalR();
+builder.Services.AddScoped<CovidService>();
 
 
 var app = builder.Build();
