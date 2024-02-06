@@ -14,6 +14,15 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<CovidService>();
 
+builder.Services.AddCors(o =>
+    o.AddPolicy("CorsPolicy", builder => {
+        builder
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:44324", "http://localhost:21093", "http://localhost:44324", "http://localhost:5067", "https://localhost:7294");
+    }));
+
 
 var app = builder.Build();
 
@@ -27,6 +36,8 @@ if (app.Environment.IsDevelopment())
 app.MapHub<CovidHub>("/CovidHub");
 
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 

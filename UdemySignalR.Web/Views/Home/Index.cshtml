@@ -15,7 +15,7 @@
             var connection = new signalR.HubConnectionBuilder()
                 //.configureLogging(signalR.LogLevel.Information) // Log mesajlari icin
                 .withAutomaticReconnect([1000, 2000, 3000, 4000]) // Otomatik tekrar baglanti icin
-                .withUrl("http://localhost:5175/MyHub")
+                .withUrl("https://localhost:5175/CovidHub")
                 .build();
 
             showStatus();
